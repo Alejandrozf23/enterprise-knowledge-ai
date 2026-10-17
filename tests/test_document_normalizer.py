@@ -2,6 +2,7 @@ import pytest
 
 from document_normalizer import normalize_document
 from document_normalizer import normalize_documents
+from document_normalizer import normalize_title
 
 @pytest.mark.parametrize(
     "title,content,expected_title,expected_content,expected_count",
@@ -74,3 +75,8 @@ def test_normalize_documents_rejects_invalid_content(invalid_documents):
 def test_normalize_documents_rejects_invalid_item(invalid_document):
     with pytest.raises(TypeError):
         normalize_documents([invalid_document])
+
+def test_normalize_title_multiple_documents():
+    documents = [{ "title":"Python ", "content":" Learn Python "}, { "title":"  GenAI  ", "content":"  LLM and RAG  "}]
+    result = normalize_title(documents)
+    assert result == ["python","genai"]
