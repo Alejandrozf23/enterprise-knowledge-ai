@@ -3,6 +3,7 @@ import pytest
 from document_normalizer import normalize_document
 from document_normalizer import normalize_documents
 from document_normalizer import normalize_title
+from document_normalizer import group_titles_by_source
 
 @pytest.mark.parametrize(
     "title,content,expected_title,expected_content,expected_count",
@@ -80,3 +81,9 @@ def test_normalize_title_multiple_documents():
     documents = [{ "title":"Python ", "content":" Learn Python "}, { "title":"  GenAI  ", "content":"  LLM and RAG  "}]
     result = normalize_title(documents)
     assert result == ["python","genai"]
+
+def test_group_titles_by_source():
+    documents = [{"title":"Python", "metadata":{"source":"GenAI"}}, {"title":"Spark", "metadata":{"source":"GenAI"}}, {"title":"Java", "metadata":{"source":"APX"}}]
+    result = group_titles_by_source(documents)
+    assert len(result.get("GenAI")) == 2
+    assert len(result.get("APX")) == 1
