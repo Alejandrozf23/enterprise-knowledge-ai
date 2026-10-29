@@ -23,3 +23,16 @@ def normalize_documents(documents):
         normalized_documents.append(normalize_document(document["title"], document["content"]))
 
     return normalized_documents
+
+def normalize_title(documents):
+    if not isinstance(documents, list):
+        raise TypeError("documents must be a list")
+
+    normalized_titles = []
+
+    for document in documents:
+        if not isinstance(document, dict):
+            raise TypeError("document must be a dict")
+        normalized_titles.append(document["title"].strip().lower())
+
+    return normalized_titles
