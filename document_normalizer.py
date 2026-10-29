@@ -36,3 +36,16 @@ def normalize_title(documents):
         normalized_titles.append(document["title"].strip().lower())
 
     return normalized_titles
+
+def group_titles_by_source(documents):
+    titles_by_source = {}
+
+    for document in documents:
+        source = document["metadata"]["source"]
+
+        if source not in titles_by_source:
+            titles_by_source[source] = []
+
+        titles_by_source[source].append(document["title"])
+
+    return titles_by_source
