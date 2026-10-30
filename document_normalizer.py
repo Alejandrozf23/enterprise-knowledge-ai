@@ -68,3 +68,30 @@ def unique_document_titles(documents):
             result.append(title)
 
     return result
+
+def rank_documents(document_ids, scores, min_score=0.90):
+    if not isinstance(document_ids, list) or not isinstance(scores, list):
+        raise TypeError("documents and scores must be a lists")
+
+    result = []
+
+    for rank, (document_id, score) in enumerate(
+        zip(document_ids, scores, strict=True), start=1
+    ):
+        if not isinstance(document_id, str):
+            raise TypeError("id must be a str")
+
+        if isinstance(score, bool) or not isinstance(score, (int, float)):
+            raise TypeError("score must be an int o float")
+
+        if not 0 <= score <= 1:
+            raise ValueError("score must be between 0 and 1")
+
+        if score >= min_score:
+            result.append({
+                "rank": rank,
+                "document_id": document_id,
+                "score": score,
+            })
+
+    return result
