@@ -4,6 +4,8 @@ from document_normalizer import normalize_document
 from document_normalizer import normalize_documents
 from document_normalizer import normalize_title
 from document_normalizer import group_titles_by_source
+from document_normalizer import unique_document_titles
+from document_normalizer import rank_documents
 
 @pytest.mark.parametrize(
     "title,content,expected_title,expected_content,expected_count",
@@ -87,3 +89,79 @@ def test_group_titles_by_source():
     result = group_titles_by_source(documents)
     assert len(result.get("GenAI")) == 2
     assert len(result.get("APX")) == 1
+
+@pytest.mark.parametrize("invalid_documents", [None, 123, "documents", {}])
+def test_unique_document_titles_rejects_invalid_content(invalid_documents):
+    with pytest.raises(TypeError):
+        unique_document_titles(invalid_documents)
+
+
+@pytest.mark.parametrize("invalid_document", [None, 123, "document", []])
+def test_unique_document_titles_rejects_invalid_item(invalid_document):
+    with pytest.raises(TypeError):
+        unique_document_titles([invalid_document])
+
+
+def test_unique_document_titles_multiple_documents():
+    documents = [
+        {"title": "  Python  "},
+        {"title": "python"},
+        {"title": "GenAI "},
+        {"title": "  GENAI"}
+    ]
+    result = unique_document_titles(documents)
+    assert result == ["python", "genai"]
+
+
+def test_unique_document_titles_empty_list():
+    result = unique_document_titles([])
+    assert result == []
+
+
+def test_unique_document_titles_missing_key():
+    documents = [{"name": "Missing Title Key"}]
+    with pytest.raises(KeyError):
+        unique_document_titles(documents)
+
+@pytest.mark.parametrize("invalid_documents", [None, 123, "documents", {}])
+def test_rank_documents_rejects_invalid_content(invalid_documents):
+    with pytest.raises(TypeError):
+        rank_documents(invalid_documents, [0.95])
+
+@pytest.mark.parametrize("out_of_bounds_score", [-0.1, 1.1, 2.0, 123])
+def test_rank_documents_rejects_out_of_bounds_score(out_of_bounds_score):
+    with pytest.raises(ValueError):
+        rank_documents(["doc_1"], [out_of_bounds_score])
+
+def test_rank_documents_multiple_documents():
+    document_ids = ["doc_1", "doc_2", "doc_3"]
+    scores = [0.95, 0.85, 0.91]
+
+    # Filtrado por defecto (min_score=0.90)
+    result = rank_documents(document_ids, scores)
+    assert result == [
+        {"rank": 1, "document_id": "doc_1", "score": 0.95},
+        {"rank": 3, "document_id": "doc_3", "score": 0.91}
+    ]
+
+
+def test_rank_documents_custom_min_score():
+    document_ids = ["doc_1", "doc_2"]
+    scores = [0.85, 0.70]
+
+    result = rank_documents(document_ids, scores, min_score=0.70)
+    assert result == [
+        {"rank": 1, "document_id": "doc_1", "score": 0.85},
+        {"rank": 2, "document_id": "doc_2", "score": 0.70}
+    ]
+
+
+def test_rank_documents_mismatched_lengths():
+    # Al usar strict=True, si las listas difieren en tamaño arrojará un ValueError
+    with pytest.raises(ValueError):
+        rank_documents(["doc_1", "doc_2"], [0.95])
+
+
+def test_rank_documents_empty_lists():
+    result = rank_documents([], [])
+    assert result == []
