@@ -49,3 +49,22 @@ def group_titles_by_source(documents):
         titles_by_source[source].append(document["title"])
 
     return titles_by_source
+
+def unique_document_titles(documents):
+    if not isinstance(documents, list):
+        raise TypeError("documents must be a list")
+
+    seen = set()
+    result = []
+
+    for document in documents:
+        if not isinstance(document, dict):
+            raise TypeError("document must be a dict")
+
+        title = document["title"].strip().lower()
+
+        if title not in seen:
+            seen.add(title)
+            result.append(title)
+
+    return result
