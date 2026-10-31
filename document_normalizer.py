@@ -95,3 +95,20 @@ def rank_documents(document_ids, scores, min_score=0.90):
             })
 
     return result
+
+def summarize_documents(documents, min_words=3):
+    if not isinstance(documents, list):
+        raise TypeError("documents debe ser una lista")
+
+    for document in documents:
+        if not isinstance(document, dict):
+            raise TypeError("cada documento debe ser un diccionario")
+
+    return [
+        {
+            "title": document["title"].strip().lower(),
+            "word_count": len(document["content"].split()),
+        }
+        for document in documents
+        if len(document["content"].split()) >= min_words
+    ]
