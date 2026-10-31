@@ -1,3 +1,5 @@
+import copy
+
 def normalize_document(title, content):
     if not isinstance(title, str) or not isinstance(content, str):
         raise TypeError("title and content must be String")
@@ -98,11 +100,11 @@ def rank_documents(document_ids, scores, min_score=0.90):
 
 def summarize_documents(documents, min_words=3):
     if not isinstance(documents, list):
-        raise TypeError("documents debe ser una lista")
+        raise TypeError("documents must be a list")
 
     for document in documents:
         if not isinstance(document, dict):
-            raise TypeError("cada documento debe ser un diccionario")
+            raise TypeError("document must be a dict")
 
     return [
         {
@@ -112,3 +114,21 @@ def summarize_documents(documents, min_words=3):
         for document in documents
         if len(document["content"].split()) >= min_words
     ]
+
+def add_document_tag(document, tag):
+    if not isinstance(document, dict):
+        raise TypeError("document must be a dict")
+
+    if not isinstance(tag, str):
+        raise TypeError("tag must be a str")
+
+    if not isinstance(document["metadata"], dict):
+        raise TypeError("metadata must be a dict")
+
+    if not isinstance(document["metadata"]["tags"], list):
+        raise TypeError("tags must be a list")
+
+    result = copy.deepcopy(document)
+    result["metadata"]["tags"].append(tag.strip().lower())
+
+    return result
