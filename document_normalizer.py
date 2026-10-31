@@ -1,5 +1,3 @@
-import copy
-
 def normalize_document(title, content):
     if not isinstance(title, str) or not isinstance(content, str):
         raise TypeError("title and content must be String")
