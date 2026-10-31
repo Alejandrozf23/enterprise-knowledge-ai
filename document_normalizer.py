@@ -132,3 +132,40 @@ def add_document_tag(document, tag):
     result["metadata"]["tags"].append(tag.strip().lower())
 
     return result
+
+def tag_documents(documents, tag):
+    if not isinstance(documents, list):
+        raise TypeError("documents must be a list")
+
+    if not isinstance(tag, str):
+        raise TypeError("tag must be a str")
+
+    normalized_tag = tag.strip().lower()
+    if not normalized_tag:
+        raise ValueError("tag must not be empty")
+
+    for document in documents:
+        if not isinstance(document, dict):
+            raise TypeError("document must be a dict")
+
+        if not isinstance(document["metadata"], dict):
+            raise TypeError("metadata must be a dict")
+
+        if not isinstance(document["metadata"]["tags"], list):
+            raise TypeError("tags must be a list")
+
+    result = copy.deepcopy(documents)
+
+    for document in result:
+        tags = document["metadata"]["tags"]
+        tag_exists = False
+
+        for existing_tag in tags:
+            if existing_tag.strip().lower() == normalized_tag:
+                tag_exists = True
+                break
+
+        if not tag_exists:
+            tags.append(normalized_tag)
+
+    return result
