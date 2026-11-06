@@ -12,3 +12,16 @@ Features:
 - Preserves the first occurrence of each document.
 - Avoids modifying the original input.
 - Includes automated tests with pytest.
+
+## Document batch validation
+
+The batch validator provides an optional duplicate-rejection
+policy for normalized document collections.
+
+```python
+from document_batch_validator import validate_document_batch
+
+report = validate_document_batch(
+    documents,
+    reject_duplicates=True,
+)
