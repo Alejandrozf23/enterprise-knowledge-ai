@@ -21,3 +21,17 @@ def load_document_batch(path, /, *, reject_duplicates=False):
         documents,
         reject_duplicates=reject_duplicates,
     )
+
+def iter_document_titles(documents, /, *, min_words=0):
+    if type(min_words) is not int:
+        raise TypeError("min_words debe ser int, no bool")
+
+    if min_words < 0:
+        raise ValueError("min_words no debe ser negativo")
+
+    def generate_titles():
+        for document in process_document_collection(documents):
+            if document["word_count"] >= min_words:
+                yield document["title"]
+
+    return generate_titles()
