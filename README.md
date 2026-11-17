@@ -42,3 +42,37 @@ Skipped malformed lines are excluded from batch statistics.
 
 The batch loaders materialize document collections before
 global deduplication; end-to-end streaming is not implemented yet.
+
+## AWS serverless integration
+
+The project includes an AWS S3 event-processing adapter.
+
+Components:
+
+- `s3_ingestion.py`: S3 event parsing and object loading.
+- `lambda_handler.py`: AWS Lambda entry point.
+- `template.yaml`: AWS SAM infrastructure definition.
+
+The adapter supports JSON and JSONL files under `incoming/`.
+
+Local tests use fake S3 clients and do not require AWS credentials.
+
+The initial MVP limits complete S3 object downloads to 5 MiB.
+
+Infrastructure has not yet been deployed.
+
+### Security
+
+- IAM permissions limited to reading incoming objects.
+- No S3 write permissions in the initial Lambda role.
+- Event filters prevent processed objects from triggering Lambda.
+- Small concurrency limit for initial deployment.
+- No AWS credentials stored in the repository.
+
+### Future improvements
+
+- Idempotency and retry handling.
+- Failure destinations and alarms.
+- Incremental processing for large files.
+- Persistent processed documents and chunks.
+- Embeddings and semantic retrieval.
