@@ -21,7 +21,7 @@ Resources:
     Properties:
       CodeUri: .
       Handler: lambda_handler.lambda_handler
-      Runtime: python3.13
+      Runtime: python3.12
       MemorySize: 256
       Timeout: 30
       ReservedConcurrentExecutions: 2
