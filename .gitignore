@@ -30,4 +30,6 @@ env/
 Thumbs.db
 
 #AWS
-.aws-sam/
+/.aws-sam/
+/build/
+/smoke.json

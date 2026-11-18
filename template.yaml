@@ -6,6 +6,7 @@ Resources:
   InputBucket:
     Type: AWS::S3::Bucket
     Properties:
+      BucketName: !Sub "${AWS::StackName}-${AWS::Region}-${AWS::AccountId}-input"
       PublicAccessBlockConfiguration:
         BlockPublicAcls: true
         BlockPublicPolicy: true
@@ -19,7 +20,7 @@ Resources:
   IngestionFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: .
+      CodeUri: build/lambda
       Handler: lambda_handler.lambda_handler
       Runtime: python3.12
       MemorySize: 256
@@ -60,6 +61,12 @@ Resources:
                     Value: incoming/
                   - Name: suffix
                     Value: .jsonl
+
+  IngestionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${IngestionFunction}"
+      RetentionInDays: 7
 
 Outputs:
   InputBucketName:
