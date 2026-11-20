@@ -28,13 +28,6 @@ Resources:
       ReservedConcurrentExecutions: 2
       Role: !Sub "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/eka-lambda-ingestion-dev"
 
-      Policies:
-        - Version: "2012-10-17"
-          Statement:
-            - Effect: Allow
-              Action:
-                - s3:GetObject
-
       Events:
         JsonCreated:
           Type: S3
