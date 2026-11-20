@@ -26,6 +26,7 @@ Resources:
       MemorySize: 256
       Timeout: 30
       ReservedConcurrentExecutions: 2
+      Role: !Sub "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/eka-lambda-ingestion-dev"
 
       Policies:
         - Version: "2012-10-17"
@@ -33,7 +34,6 @@ Resources:
             - Effect: Allow
               Action:
                 - s3:GetObject
-              Resource: !Sub "arn:${AWS::Partition}:s3:::${AWS::StackName}-${AWS::Region}-${AWS::AccountId}-input/incoming/*"
 
       Events:
         JsonCreated:
