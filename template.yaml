@@ -33,7 +33,7 @@ Resources:
             - Effect: Allow
               Action:
                 - s3:GetObject
-              Resource: !Sub "${InputBucket.Arn}/incoming/*"
+              Resource: !Sub "arn:${AWS::Partition}:s3:::${AWS::StackName}-${AWS::Region}-${AWS::AccountId}-input/incoming/*"
 
       Events:
         JsonCreated:
